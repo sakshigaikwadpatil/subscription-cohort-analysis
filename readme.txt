@@ -29,3 +29,33 @@ The analysis focuses on:
 - CTEs
 - Business KPI Reporting
 - Cohort Analysis
+
+## Business Problem
+The objective of this project is to analyze customer subscription behavior and identify trends related to:
+- customer churn
+- retention
+- customer acquisition
+- subscription revenue
+
+## Dataset Information
+The dataset contains:
+- customer IDs
+- subscription start dates
+- cancellation dates
+- subscription pricing
+- payment status
+- subscription plans
+
+## Business Insights
+- Identified customer churn patterns using cancellation data.
+- Analyzed subscription revenue trends across customer cohorts.
+- Evaluated retention performance based on signup periods.
+- Compared active and churned customer behavior.
+
+## SQL Concepts Used
+- Aggregate Functions
+- GROUP BY
+- CTEs
+- Date Functions
+- Filtering
+- Cohort Analysis
