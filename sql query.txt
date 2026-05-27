@@ -1,0 +1,84 @@
+-- Total Revenue
+SELECT 
+    SUM(subscription_cost) AS total_revenue
+FROM subscriptions
+WHERE was_subscription_paid = 'Yes';
+
+-- Total Customers
+SELECT 
+    COUNT(DISTINCT customer_id) AS total_customers
+FROM subscriptions;
+
+-- Active Customers
+SELECT 
+    COUNT(*) AS active_customers
+FROM subscriptions
+WHERE canceled_date IS NULL;
+
+-- Churned Customers
+SELECT 
+    COUNT(*) AS churned_customers
+FROM subscriptions
+WHERE canceled_date IS NOT NULL;
+
+-- Revenue By Subscription Plan
+SELECT 
+    subscription_interval,
+    COUNT(*) AS customers,
+    SUM(subscription_cost) AS revenue
+FROM subscriptions
+GROUP BY subscription_interval
+ORDER BY revenue DESC;
+
+-- Monthly Customer Acquisition
+SELECT 
+    DATE_TRUNC('month', created_date) AS signup_month,
+    COUNT(*) AS customers
+FROM subscriptions
+GROUP BY signup_month
+ORDER BY signup_month;
+
+-- Monthly Revenue Trend
+SELECT 
+    DATE_TRUNC('month', created_date) AS revenue_month,
+    SUM(subscription_cost) AS revenue
+FROM subscriptions
+WHERE was_subscription_paid = 'Yes'
+GROUP BY revenue_month
+ORDER BY revenue_month;
+
+-- Churn Rate
+SELECT 
+    ROUND(
+        COUNT(CASE 
+            WHEN canceled_date IS NOT NULL THEN 1 
+        END) * 100.0 / COUNT(*),
+    2) AS churn_rate
+FROM subscriptions;
+
+-- Average Customer Lifetime
+SELECT 
+    AVG(canceled_date - created_date) AS avg_customer_lifetime_days
+FROM subscriptions
+WHERE canceled_date IS NOT NULL;
+
+-- Cohort Analysis
+WITH cohort_data AS (
+    SELECT 
+        customer_id,
+        DATE_TRUNC('month', created_date) AS cohort_month,
+        DATE_TRUNC('month', canceled_date) AS cancel_month
+    FROM subscriptions
+)
+
+SELECT 
+    cohort_month,
+    COUNT(*) AS total_customers,
+    COUNT(cancel_month) AS churned_customers,
+    ROUND(
+        100.0 * (COUNT(*) - COUNT(cancel_month)) / COUNT(*),
+        2
+    ) AS retention_rate
+FROM cohort_data
+GROUP BY cohort_month
+ORDER BY cohort_month;
